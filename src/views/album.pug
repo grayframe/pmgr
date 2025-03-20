@@ -1,0 +1,83 @@
+extends layout
+
+block content
+  .container.mx-auto.px-4.py-8
+    .max-w-7xl.mx-auto
+      //- Album Header
+      .flex.justify-between.items-center.mb-8
+        div
+          h1.text-3xl.font-bold.text-gray-900= album.name
+          if album.description
+            p.text-gray-600.mt-2= album.description
+        .flex.space-x-4
+          a.bg-blue-500.hover:bg-blue-600.text-white.font-semibold.py-2.px-4.rounded(href=`/albums/${album.id}/edit`)
+            | Edit Album
+          button.bg-red-500.hover:bg-red-600.text-white.font-semibold.py-2.px-4.rounded(onclick=`deleteAlbum(${album.id})`)
+            | Delete Album
+
+      //- Photos Grid
+      .grid.grid-cols-1.md:grid-cols-2.lg:grid-cols-3.gap-6
+        each photo in album.Photos
+          .bg-white.rounded-lg.shadow-md.overflow-hidden
+            img.w-full.h-64.object-cover(src=photo.url alt=photo.title)
+            .p-4
+              h2.text-xl.font-semibold.text-gray-900= photo.title
+              if photo.description
+                p.text-gray-600.mt-2= photo.description
+              .mt-4.flex.justify-between.items-center
+                .text-sm.text-gray-500
+                  | #{new Date(photo.createdAt).toLocaleDateString()}
+                .flex.space-x-2
+                  a.text-blue-500.hover:text-blue-600(href=`/photos/${photo.id}`)
+                    | View
+                  button.text-red-500.hover:text-red-600(onclick=`removePhotoFromAlbum(${photo.id}, ${album.id})`)
+                    | Remove
+
+      //- Empty State
+      if album.Photos.length === 0
+        .text-center.py-12
+          svg.mx-auto.h-12.w-12.text-gray-400(xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor")
+            path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z")
+          h3.mt-2.text-sm.font-medium.text-gray-900 No photos in this album
+          p.mt-1.text-sm.text-gray-500 Add photos to this album by editing it.
+          .mt-6
+            a.inline-flex.items-center.px-4.py-2.border.border-transparent.shadow-sm.text-sm.font-medium.rounded-md.text-white.bg-blue-600.hover:bg-blue-700(href=`/albums/${album.id}/edit`)
+              | Edit Album
+
+block scripts
+  script.
+    function deleteAlbum(albumId) {
+      if (confirm('Are you sure you want to delete this album?')) {
+        fetch(`/albums/${albumId}`, {
+          method: 'DELETE'
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Delete failed');
+          }
+          window.location.href = '/albums';
+        })
+        .catch(error => {
+          console.error('Delete error:', error);
+          alert('Failed to delete album');
+        });
+      }
+    }
+
+    function removePhotoFromAlbum(photoId, albumId) {
+      if (confirm('Are you sure you want to remove this photo from the album?')) {
+        fetch(`/albums/${albumId}/photos/${photoId}`, {
+          method: 'DELETE'
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Remove failed');
+          }
+          window.location.reload();
+        })
+        .catch(error => {
+          console.error('Remove error:', error);
+          alert('Failed to remove photo from album');
+        });
+      }
+    } 
