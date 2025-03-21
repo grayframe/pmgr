@@ -1,10 +1,10 @@
 {
-  "name": "photo-manager",
-  "version": "1.0.0",
+  "name": "pmgr",
+  "version": "0.0.0",
   "description": "A photo management application",
   "main": "src/index.js",
   "bin": {
-    "photo-manager": "./src/cli.js"
+    "pmgr": "./src/cli.js"
   },
   "scripts": {
     "start": "node src/index.js",
@@ -20,26 +20,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bcryptjs": "^2.4.3",
-    "commander": "^11.1.0",
-    "connect-flash": "^0.1.1",
-    "connect-session-sequelize": "^7.1.5",
-    "cors": "^2.8.5",
     "debug": "^4.4.0",
     "dotenv": "^16.4.1",
-    "express": "^4.18.2",
-    "express-session": "^1.17.3",
     "knex": "^3.1.0",
-    "method-override": "^3.0.0",
-    "multer": "^1.4.5-lts.1",
-    "passport": "^0.7.0",
-    "passport-facebook": "^3.0.0",
-    "passport-google-oauth20": "^2.0.0",
-    "passport-local": "^1.0.0",
     "pg": "^8.11.3",
-    "pug": "^3.0.2",
-    "sharp": "^0.33.2",
-    "socket.io": "^4.7.2"
+    "pug": "^3.0.2"
   },
   "devDependencies": {
     "jest": "^29.7.0",
