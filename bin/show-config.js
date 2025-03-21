@@ -1,13 +1,32 @@
 const { Command } = require('commander');
 
-module.exports = (config) => {
-  const command = new Command('show-config')
-    .description('Show current configuration')
-    .action(async () => {
-      // Implementation will go here
-      console.log('Current configuration:');
-      console.log(JSON.stringify(config, null, 2));
-    });
+const Config = require('../src/config');
 
-  return command;
-}; 
+module.exports = new Command('show-config')
+	.description('Show current configuration')
+	.option('-s, --show-sources', 'Show values from each config source')
+	.action(async (options) => {
+		if (process.env.NODE_ENV === 'production')
+		{
+			console.log('will not print config in production');
+			return;
+		}
+
+		//loading config manually because we don't instantiate pmgr
+		let config = Config();
+
+		let file = config.file;
+
+		if (options.showSources)
+		{
+			console.log('From Environment:');
+			console.log('From Files:');
+			console.log('Assumed Default:');
+		}
+
+
+		console.log('Actual config:');
+		console.log(config.actual);
+
+	});
+

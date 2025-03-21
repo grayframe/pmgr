@@ -4,11 +4,11 @@
   "description": "A photo management application",
   "main": "src/index.js",
   "bin": {
-    "pmgr": "./src/cli.js"
+    "pmgr": "./bin/index.js"
   },
   "scripts": {
-    "start": "node src/index.js",
-    "dev": "nodemon src/index.js",
+    "start": "pmgr serve",
+    "dev": "nodemon pmgr serve",
     "test": "jest",
     "migrate": "knex migrate:latest",
     "migrate:rollback": "knex migrate:rollback"
@@ -20,8 +20,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "commander": "^13.1.0",
     "debug": "^4.4.0",
-    "dotenv": "^16.4.1",
+    "dotenv": "^16.4.7",
     "knex": "^3.1.0",
     "pg": "^8.11.3",
     "pug": "^3.0.2"
