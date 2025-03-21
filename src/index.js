@@ -9,6 +9,7 @@ const path = require('path');
 const { sequelize } = require('./models');
 const authService = require('./services/auth');
 const methodOverride = require('method-override');
+const flash = require('connect-flash');
 
 // Import routes
 const authRouter = require('./routes/auth');
@@ -29,7 +30,7 @@ const io = new Server(httpServer, {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '../public')));
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
@@ -46,9 +47,22 @@ app.use(session({
   }
 }));
 
+// Flash messages
+app.use(flash());
+
 // Passport configuration
 app.use(passport.initialize());
 app.use(passport.session());
+
+// Make user and flash messages available to all views
+app.use((req, res, next) => {
+  res.locals.user = req.user;
+  res.locals.messages = req.flash();
+  next();
+});
+
+// Register passport strategies
+authService.setupStrategies();
 
 passport.serializeUser((user, done) => {
   done(null, user.id);
@@ -65,11 +79,6 @@ passport.deserializeUser(async (id, done) => {
   }
 });
 
-// Register passport strategies
-authService.strategies.forEach((strategy, name) => {
-  passport.use(name, strategy);
-});
-
 // Routes
 app.get('/', (req, res) => {
   if (req.isAuthenticated()) {
@@ -77,6 +86,11 @@ app.get('/', (req, res) => {
   } else {
     res.render('welcome', { title: 'Welcome to Photo Manager' });
   }
+});
+
+// Login page route
+app.get('/login', (req, res) => {
+  res.render('login', { title: 'Login' });
 });
 
 // Auth routes
@@ -93,6 +107,10 @@ const requireAuth = (req, res, next) => {
 app.use('/api/photos', requireAuth, photoRouter);
 app.use('/api/albums', requireAuth, albumRouter);
 app.use('/api/projects', requireAuth, projectRouter);
+
+app.use('/photos', requireAuth, photoRouter);
+app.use('/albums', requireAuth, albumRouter);
+app.use('/projects', requireAuth, projectRouter); 
 
 // WebSocket authentication middleware
 io.use((socket, next) => {

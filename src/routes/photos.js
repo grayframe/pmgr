@@ -6,6 +6,7 @@ const fs = require('fs').promises;
 const { Photo, Album } = require('../models');
 const { isAuthenticated } = require('../middleware/auth');
 const sharp = require('sharp');
+const debug = require('debug')('p:routes:photos');
 
 // Configure multer for file upload
 const storage = multer.diskStorage({
@@ -15,6 +16,7 @@ const storage = multer.diskStorage({
       await fs.mkdir(uploadDir, { recursive: true });
       cb(null, uploadDir);
     } catch (error) {
+      debug('Multer storage error: %O', error);
       cb(error);
     }
   },
@@ -33,41 +35,54 @@ const upload = multer({
     if (file.mimetype.startsWith('image/')) {
       cb(null, true);
     } else {
+      debug('Invalid file type: %O', { mimetype: file.mimetype });
       cb(new Error('Only image files are allowed'));
     }
   }
 });
 
-// Get all photos
+// Get photos page
 router.get('/', isAuthenticated, async (req, res) => {
   try {
+    debug('GET / - Fetching photos for user: %O', { id: req.user.id });
     const photos = await Photo.findAll({
       where: { userId: req.user.id },
       order: [['createdAt', 'DESC']]
     });
-    res.render('index', { photos });
+    debug('GET / - Successfully fetched %d photos', photos.length);
+    res.render('photos', { 
+      title: 'Your Photos',
+      photos,
+      user: req.user
+    });
   } catch (error) {
-    console.error('Error fetching photos:', error);
-    res.status(500).send('Error fetching photos');
+    debug('GET / - Error fetching photos: %O', error);
+    res.status(500).render('error', { 
+      message: 'Error loading photos',
+      error: process.env.NODE_ENV === 'development' ? error : {}
+    });
   }
 });
 
 // Get single photo
 router.get('/:id', isAuthenticated, async (req, res) => {
   try {
+    debug('GET /:id - Fetching photo: %O', { id: req.params.id, userId: req.user.id });
     const photo = await Photo.findOne({
       where: { id: req.params.id, userId: req.user.id },
       include: [Album]
     });
     if (!photo) {
+      debug('GET /:id - Photo not found: %O', { id: req.params.id });
       return res.status(404).send('Photo not found');
     }
     const albums = await Album.findAll({
       where: { userId: req.user.id }
     });
+    debug('GET /:id - Successfully fetched photo and albums');
     res.render('photo', { photo, albums });
   } catch (error) {
-    console.error('Error fetching photo:', error);
+    debug('GET /:id - Error fetching photo: %O', error);
     res.status(500).send('Error fetching photo');
   }
 });
@@ -76,8 +91,15 @@ router.get('/:id', isAuthenticated, async (req, res) => {
 router.post('/', isAuthenticated, upload.single('photo'), async (req, res) => {
   try {
     if (!req.file) {
+      debug('POST / - No file uploaded');
       return res.status(400).json({ error: 'No file uploaded' });
     }
+
+    debug('POST / - Processing photo upload: %O', { 
+      filename: req.file.filename,
+      size: req.file.size,
+      mimetype: req.file.mimetype
+    });
 
     // Process image with sharp
     const image = sharp(req.file.path);
@@ -100,11 +122,13 @@ router.post('/', isAuthenticated, upload.single('photo'), async (req, res) => {
     if (req.body.albums) {
       const albumIds = Array.isArray(req.body.albums) ? req.body.albums : [req.body.albums];
       await photo.setAlbums(albumIds);
+      debug('POST / - Associated photo with albums: %O', { albumIds });
     }
 
+    debug('POST / - Successfully uploaded photo: %O', { id: photo.id });
     res.json(photo);
   } catch (error) {
-    console.error('Error uploading photo:', error);
+    debug('POST / - Error uploading photo: %O', error);
     res.status(500).json({ error: 'Error uploading photo' });
   }
 });
@@ -112,10 +136,12 @@ router.post('/', isAuthenticated, upload.single('photo'), async (req, res) => {
 // Update photo
 router.put('/:id', isAuthenticated, async (req, res) => {
   try {
+    debug('PUT /:id - Updating photo: %O', { id: req.params.id, userId: req.user.id });
     const photo = await Photo.findOne({
       where: { id: req.params.id, userId: req.user.id }
     });
     if (!photo) {
+      debug('PUT /:id - Photo not found: %O', { id: req.params.id });
       return res.status(404).send('Photo not found');
     }
 
@@ -128,11 +154,13 @@ router.put('/:id', isAuthenticated, async (req, res) => {
     if (req.body.albums) {
       const albumIds = Array.isArray(req.body.albums) ? req.body.albums : [req.body.albums];
       await photo.setAlbums(albumIds);
+      debug('PUT /:id - Updated album associations: %O', { albumIds });
     }
 
+    debug('PUT /:id - Successfully updated photo: %O', { id: photo.id });
     res.redirect(`/photos/${photo.id}`);
   } catch (error) {
-    console.error('Error updating photo:', error);
+    debug('PUT /:id - Error updating photo: %O', error);
     res.status(500).send('Error updating photo');
   }
 });
@@ -140,23 +168,27 @@ router.put('/:id', isAuthenticated, async (req, res) => {
 // Delete photo
 router.delete('/:id', isAuthenticated, async (req, res) => {
   try {
+    debug('DELETE /:id - Deleting photo: %O', { id: req.params.id, userId: req.user.id });
     const photo = await Photo.findOne({
       where: { id: req.params.id, userId: req.user.id }
     });
     if (!photo) {
+      debug('DELETE /:id - Photo not found: %O', { id: req.params.id });
       return res.status(404).send('Photo not found');
     }
 
     // Delete file from storage
     const filePath = path.join(__dirname, '../../', photo.url);
     await fs.unlink(filePath);
+    debug('DELETE /:id - Deleted file from storage: %O', { filePath });
 
     // Delete photo record
     await photo.destroy();
+    debug('DELETE /:id - Successfully deleted photo record');
 
     res.json({ success: true });
   } catch (error) {
-    console.error('Error deleting photo:', error);
+    debug('DELETE /:id - Error deleting photo: %O', error);
     res.status(500).json({ error: 'Error deleting photo' });
   }
 });
@@ -164,21 +196,33 @@ router.delete('/:id', isAuthenticated, async (req, res) => {
 // Edit photo page
 router.get('/:id/edit', isAuthenticated, async (req, res) => {
   try {
+    debug('GET /:id/edit - Fetching photo for edit: %O', { id: req.params.id, userId: req.user.id });
     const photo = await Photo.findOne({
       where: { id: req.params.id, userId: req.user.id },
       include: [Album]
     });
     if (!photo) {
+      debug('GET /:id/edit - Photo not found: %O', { id: req.params.id });
       return res.status(404).send('Photo not found');
     }
     const albums = await Album.findAll({
       where: { userId: req.user.id }
     });
+    debug('GET /:id/edit - Successfully fetched photo and albums for edit');
     res.render('photo-edit', { photo, albums });
   } catch (error) {
-    console.error('Error fetching photo for edit:', error);
+    debug('GET /:id/edit - Error fetching photo for edit: %O', error);
     res.status(500).send('Error fetching photo');
   }
+});
+
+// Upload page
+router.get('/upload', isAuthenticated, (req, res) => {
+  debug('GET /upload - Rendering upload page for user: %O', { id: req.user.id });
+  res.render('upload', { 
+    title: 'Upload Photo',
+    user: req.user
+  });
 });
 
 module.exports = router; 

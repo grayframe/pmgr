@@ -1,112 +1,127 @@
-const { User, AuthProvider } = require('../models');
 const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
 const FacebookStrategy = require('passport-facebook').Strategy;
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const LocalStrategy = require('passport-local').Strategy;
+const { User, AuthProvider } = require('../models');
 const bcrypt = require('bcryptjs');
 
 class AuthService {
   constructor() {
-    this.strategies = new Map();
+    this.setupSerializers();
     this.setupStrategies();
   }
 
-  setupStrategies() {
-    // Facebook Strategy
-    this.strategies.set('facebook', new FacebookStrategy({
-      clientID: process.env.FACEBOOK_APP_ID,
-      clientSecret: process.env.FACEBOOK_APP_SECRET,
-      callbackURL: process.env.FACEBOOK_CALLBACK_URL,
-      profileFields: ['id', 'displayName', 'photos', 'email']
-    }, this.handleOAuthCallback.bind(this)));
+  setupSerializers() {
+    passport.serializeUser((user, done) => {
+      done(null, user.id);
+    });
 
-    // Google Strategy
-    this.strategies.set('google', new GoogleStrategy({
-      clientID: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: process.env.GOOGLE_CALLBACK_URL,
-      scope: ['profile', 'email']
-    }, this.handleOAuthCallback.bind(this)));
-
-    // Local Strategy (email/password)
-    this.strategies.set('local', new LocalStrategy({
-      usernameField: 'email',
-      passwordField: 'password'
-    }, this.handleLocalCallback.bind(this)));
+    passport.deserializeUser(async (id, done) => {
+      try {
+        const user = await User.findByPk(id);
+        done(null, user);
+      } catch (error) {
+        done(error);
+      }
+    });
   }
 
-  async handleOAuthCallback(accessToken, refreshToken, profile, done) {
-    try {
-      // Find or create user
-      let user = await User.findOne({
-        where: { email: profile.emails[0].value },
-        include: [AuthProvider]
-      });
-
-      if (!user) {
-        // Create new user
-        user = await User.create({
-          email: profile.emails[0].value,
-          displayName: profile.displayName,
-          profilePicture: profile.photos?.[0]?.value
+  setupStrategies() {
+    // Local Strategy
+    passport.use(new LocalStrategy({
+      usernameField: 'email',
+      passwordField: 'password'
+    }, async (email, password, done) => {
+      try {
+        const user = await User.findOne({ 
+          where: { email },
+          include: [{
+            model: AuthProvider,
+            where: { provider: 'local' },
+            required: true
+          }]
         });
-      }
+        
+        if (!user) {
+          return done(null, false, { message: 'Incorrect email.' });
+        }
 
+        const authProvider = user.AuthProviders[0];
+        const isValid = await bcrypt.compare(password, authProvider.profileData.passwordHash);
+        
+        if (!isValid) {
+          return done(null, false, { message: 'Incorrect password.' });
+        }
+
+        return done(null, user);
+      } catch (error) {
+        return done(error);
+      }
+    }));
+
+    // Facebook Strategy (optional)
+    if (process.env.FACEBOOK_APP_ID && process.env.FACEBOOK_APP_SECRET) {
+      passport.use(new FacebookStrategy({
+        clientID: process.env.FACEBOOK_APP_ID,
+        clientSecret: process.env.FACEBOOK_APP_SECRET,
+        callbackURL: process.env.FACEBOOK_CALLBACK_URL,
+        profileFields: ['id', 'displayName', 'photos', 'email']
+      }, this.handleOAuthLogin.bind(this, 'facebook')));
+    }
+
+    // Google Strategy (optional)
+    if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
+      passport.use(new GoogleStrategy({
+        clientID: process.env.GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        callbackURL: process.env.GOOGLE_CALLBACK_URL
+      }, this.handleOAuthLogin.bind(this, 'google')));
+    }
+  }
+
+  async handleOAuthLogin(provider, accessToken, refreshToken, profile, done) {
+    try {
       // Find or create auth provider
       const [authProvider] = await AuthProvider.findOrCreate({
         where: {
-          userId: user.id,
-          provider: profile.provider,
+          provider,
           providerId: profile.id
         },
         defaults: {
           accessToken,
-          refreshToken,
-          profileData: profile._json,
-          isPrimary: !user.AuthProviders?.length // Make primary if first provider
+          refreshToken
         }
       });
 
-      // Update tokens if they've changed
-      if (authProvider.accessToken !== accessToken) {
-        await authProvider.update({
-          accessToken,
-          refreshToken,
-          expiresAt: new Date(Date.now() + 3600 * 1000) // 1 hour from now
+      // If auth provider exists but no user, create user
+      if (!authProvider.userId) {
+        const user = await User.create({
+          email: profile.emails[0].value,
+          displayName: profile.displayName,
+          profilePicture: profile.photos?.[0]?.value
         });
+        authProvider.userId = user.id;
+        await authProvider.save();
       }
 
-      return done(null, user);
+      // Get user
+      const user = await User.findByPk(authProvider.userId);
+      done(null, user);
     } catch (error) {
-      return done(error);
+      done(error);
     }
   }
 
-  async handleLocalCallback(email, password, done) {
-    try {
-      const user = await User.findOne({
-        where: { email },
-        include: [AuthProvider]
-      });
+  initialize() {
+    return passport.initialize();
+  }
 
-      if (!user) {
-        return done(null, false, { message: 'Incorrect email or password' });
-      }
+  session() {
+    return passport.session();
+  }
 
-      const authProvider = user.AuthProviders?.find(ap => ap.provider === 'local');
-      if (!authProvider) {
-        return done(null, false, { message: 'Please use a different login method' });
-      }
-
-      const isValid = await bcrypt.compare(password, authProvider.profileData.passwordHash);
-      if (!isValid) {
-        return done(null, false, { message: 'Incorrect email or password' });
-      }
-
-      return done(null, user);
-    } catch (error) {
-      return done(error);
-    }
+  authenticate(strategy, options = {}) {
+    return passport.authenticate(strategy, options);
   }
 
   async registerLocalUser(email, password, displayName) {
@@ -165,4 +180,5 @@ class AuthService {
   }
 }
 
+module.exports = new AuthService(); 
 module.exports = new AuthService(); 

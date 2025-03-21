@@ -1,5 +1,12 @@
 const { Sequelize } = require('sequelize');
-require('dotenv').config();
+
+console.log('Models Database Configuration:', {
+  database: process.env.DB_NAME,
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  dialect: process.env.DB_DIALECT || 'postgres'
+});
 
 const sequelize = new Sequelize(
   process.env.DB_NAME,
