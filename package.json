@@ -4,14 +4,16 @@
   "description": "A photo management application",
   "main": "src/index.js",
   "bin": {
-    "pmgr": "./bin/index.js"
+    "pmgr": "./src/cli.js"
   },
   "scripts": {
     "start": "pmgr serve",
     "dev": "nodemon pmgr serve",
     "test": "jest",
     "migrate": "knex migrate:latest",
-    "migrate:rollback": "knex migrate:rollback"
+    "migrate:rollback": "knex migrate:rollback",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "repository": {
     "type": "git",
@@ -23,11 +25,15 @@
     "commander": "^13.1.0",
     "debug": "^4.4.0",
     "dotenv": "^16.4.7",
+    "express": "^4.21.2",
     "knex": "^3.1.0",
     "pg": "^8.11.3",
     "pug": "^3.0.2"
   },
   "devDependencies": {
+    "@eslint/js": "^9.23.0",
+    "eslint": "^9.23.0",
+    "globals": "^16.0.0",
     "jest": "^29.7.0",
     "nodemon": "^3.0.3"
   },

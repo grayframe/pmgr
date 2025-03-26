@@ -1,8 +1,12 @@
-const { Command } = require('commander');
+const {
+	Command
+} = require('commander');
+const debug = require('debug')('pmgr:bin:gen-config');
 
 module.exports = new Command('show-config')
 	.description('Show current configuration')
-	.action(async () => {
+	.action(async() =>
+	{
 		//loading config manually because we don't instantiate pmgr
 		require('../src/config')();
 

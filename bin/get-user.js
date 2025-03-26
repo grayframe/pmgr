@@ -1,13 +1,18 @@
-const { Command } = require('commander');
+const {
+	Command
+} = require('commander');
+const debug = require('debug')('pmgr:bin:get-user');
 
 module.exports = new Command('get-user')
 	.description('Get user information')
 	.option('-n, --match-name <name>', 'Match by name')
 	.option('-e, --match-email <email>', 'Match by email')
 	.option('-u, --match-uuid <uuid>', 'Match by UUID')
-	.action(async (options) => {
+	.action(async(options) =>
+	{
 		// Validate that at least one match parameter is provided
-		if (!options.matchName && !options.matchEmail && !options.matchUuid) {
+		if (!options.matchName && !options.matchEmail && !options.matchUuid)
+		{
 			console.error('Error: At least one match parameter is required (--match-name, --match-email, or --match-uuid)');
 			process.exit(1);
 		}

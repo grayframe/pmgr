@@ -1,16 +1,25 @@
-const PMgr = function (config)
+const debug = require('debug')('pmgr:pmgr');
+const DB = require('./db');
+const Models = require('./models');
+
+const PMgr = function(config)
 {
 	let self = Object.create(null);
 
 	self._config = config;
 
-	let _db = require('./db')(self);
-	let _models = require('./models')(self);
+	let db = DB(self);
 
-	self.dispose = function ()
+	let models = Models(db);
+
+	self.dispose = function()
 	{
-		_db.dispose();
+		debug('Disposing of PMgr.');
+		db.dispose();
 	};
+
+	//self._models = models;
+	//self._db = db;
 
 	return self;
 };

@@ -1,4 +1,7 @@
-const { Command } = require('commander');
+const {
+	Command
+} = require('commander');
+const debug = require('debug')('pmgr:bin:create-user');
 
 module.exports = new Command('create-user')
 	.description('Create a new user')
@@ -6,7 +9,8 @@ module.exports = new Command('create-user')
 	.requiredOption('-p, --password <password>', 'User password')
 	.option('-d, --display-name <displayName>', 'User display name')
 	.option('-e, --email <email>', 'User email address')
-	.action(async (options) => {
+	.action(async(options) =>
+	{
 		// Implementation will go here
 		console.log('Creating user with options:', options);
 	});

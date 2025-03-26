@@ -4,13 +4,15 @@ const dotenv = require('dotenv');
 const config = Object.create(null);
 
 // Load environment variables from .env file
-module.exports = () => 
+module.exports = () =>
 {
 	let self = Object.create(module.exports);
 
 	process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
-	self.file = dotenv.config({ path: path.resolve(process.cwd(), `.env.${process.env.NODE_ENV}`) });
+	self.file = dotenv.config({
+		path: path.resolve(process.cwd(), `.env.${process.env.NODE_ENV}`)
+	});
 	self.actual = Object.create(null);
 
 	Object.keys(DEFAULT_CONFIG).forEach( key =>
@@ -19,7 +21,6 @@ module.exports = () =>
 	});
 
 	return self;
-
 };
 
 const DEFAULT_CONFIG = module.exports.default =
@@ -48,5 +49,5 @@ const DEFAULT_CONFIG = module.exports.default =
 
 	// Development-specific settings
 	DEBUG : true,
-	LOG_LEVEL : 'debug',
+	LOG_LEVEL : 'debug'
 };
