@@ -55,7 +55,8 @@ module.exports = [
 				'ExportDeclaration': {
 					'multiline': true, 'minProperties': 1
 				}
-			}]
+			}],
+			'eol-last': ['error', 'always']
 		}
 	}
 ];
