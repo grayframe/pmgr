@@ -4,7 +4,7 @@
   "description": "A photo management application",
   "main": "src/index.js",
   "bin": {
-    "pmgr": "./src/cli.js"
+    "pmgr": "./bin/index.js"
   },
   "scripts": {
     "start": "pmgr serve",
@@ -14,8 +14,7 @@
     "migrate:rollback": "knex migrate:rollback",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "lint:pug": "find ./tpl -type f -name '*.pug' | xargs pug-lint",
-    "lint:pug:fix": "find ./tpl -type f -name '*.pug' | xargs pug-lint --fix"
+    "lint:pug": "find ./tpl -type f -name '*.pug' | xargs pug-lint"
   },
   "repository": {
     "type": "git",

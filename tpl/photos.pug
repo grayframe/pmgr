@@ -3,3 +3,17 @@ extends layout.pug
 block content
 	h1 Your Photos
 	p View and manage your photo collection.
+
+	section.dropzone
+		.dropzone-content
+			p Drag and drop photos here
+			button.upload-btn Choose Files
+
+	section.photo-grid
+		.photo-item(data-photo-id='1')
+			img(src='placeholder.jpg' alt='Photo 1')
+			.photo-overlay
+				button.view-btn View
+				button.edit-btn Edit
+				button.delete-btn Delete
+		

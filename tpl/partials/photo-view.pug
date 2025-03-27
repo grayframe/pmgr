@@ -1,0 +1,20 @@
+.modal-content
+	.modal-header
+		h2 Photo Details
+		button.close-btn &times;
+	.modal-body
+		.photo-container
+			img#modal-photo(src='' alt='')
+		.photo-info
+			.info-group
+				label Title
+				input#photo-title(type='text' value='')
+			.info-group
+				label Description
+				textarea#photo-description
+			.info-group
+				label Tags
+				input#photo-tags(type='text' value='')
+	.modal-footer
+		button.save-btn Save Changes
+		button.cancel-btn Cancel
