@@ -8,6 +8,7 @@
   },
   "scripts": {
     "start": "pmgr serve",
+    "tunnel": "ssh -L 3000:localhost:3000 user@remotehost",
     "dev": "nodemon pmgr serve",
     "test": "jest",
     "migrate": "knex migrate:latest",
