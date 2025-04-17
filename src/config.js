@@ -20,6 +20,11 @@ module.exports = () =>
 		self.actual[key] = process.env[key];
 	});
 
+	let resolvePath = p => path.isAbsolute(p) ? p : path.join(process.cwd(), p);
+	self.getStatic = () => resolvePath(self.actual.DIR_STATIC);
+	self.getVolatile = () => resolvePath(self.actual.DIR_VOLATILE);
+	
+
 	return self;
 };
 
@@ -27,6 +32,10 @@ const DEFAULT_CONFIG = module.exports.default =
 {
 	// Development Environment Configuration
 	NODE_ENV : 'development',
+
+	DIR_STATIC : '',
+	DIR_VOLATILE : '',
+
 
 	// Database Configuration
 	DB_HOST : 'localhost',

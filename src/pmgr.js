@@ -6,7 +6,7 @@ const PMgr = function(config)
 {
 	let self = Object.create(null);
 
-	self._config = config;
+	self.config = config;
 
 	let db = DB(self);
 

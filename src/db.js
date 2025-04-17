@@ -8,12 +8,13 @@ const DB = function(pmgr)
 
 	db = knex({
 		client: 'pg',
-		connection: {
-			host: pmgr._config.DB_HOST,
-			port: pmgr._config.DB_PORT,
-			database: pmgr._config.DB_NAME,
-			user: pmgr._config.DB_USER,
-			password: pmgr._config.DB_PASSWORD
+		connection: 
+		{
+			host: pmgr.config.DB_HOST,
+			port: pmgr.config.DB_PORT,
+			database: pmgr.config.DB_NAME,
+			user: pmgr.config.DB_USER,
+			password: pmgr.config.DB_PASSWORD
 		}
 	});
 
