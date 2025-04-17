@@ -1,9 +1,7 @@
-const {
-	Command
-} = require('commander');
-const debug = require('debug')('pmgr:bin:get-user');
+const { Command } = require('commander');
+const debug = require('debug')('pmgr:bin:user:query');
 
-module.exports = new Command('get-user')
+module.exports = new Command('query')
 	.description('Get user information')
 	.option('-n, --match-name <name>', 'Match by name')
 	.option('-e, --match-email <email>', 'Match by email')

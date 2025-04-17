@@ -1,9 +1,9 @@
 const {
 	Command
 } = require('commander');
-const debug = require('debug')('pmgr:bin:create-user');
+const debug = require('debug')('pmgr:bin:user:create');
 
-module.exports = new Command('create-user')
+module.exports = new Command('create')
 	.description('Create a new user')
 	.requiredOption('-l, --login-name <loginName>', 'User login name')
 	.requiredOption('-p, --password <password>', 'User password')

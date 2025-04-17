@@ -7,8 +7,9 @@ yarn-error.log
 # Environment variables
 .env*
 
-# Uploaded files
-uploads/
+# non-commit files
+static
+volatile
 
 # IDE files
 .idea/

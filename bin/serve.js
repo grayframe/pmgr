@@ -5,9 +5,9 @@ const {
 const Config = require('../src/config');
 const PMgr = require('../src/pmgr');
 const PMHttp = require('../src/pm-http');
-const debug = require('debug')('pmgr:bin:serve-site');
+const debug = require('debug')('pmgr:bin:serve');
 
-module.exports = new Command('serve-site')
+module.exports = new Command('serve')
 	.description('Start the web server')
 	.option('-p, --port <port>', 'Port to listen on', '3000')
 	.option('-h, --host <host>', 'Host to listen on', 'localhost')
