@@ -10,7 +10,7 @@ const debug = require('debug')('pmgr:bin:serve');
 module.exports = new Command('serve')
 	.description('Start the web server')
 	.option('-p, --port <port>', 'Port to listen on', '3000')
-	.option('-h, --host <host>', 'Host to listen on', 'localhost')
+	.option('-a, --addr <addr>', 'Address to bind to', '0.0.0.0')
 	.action(async(options) =>
 	{
 		let config = Config();
@@ -19,5 +19,5 @@ module.exports = new Command('serve')
 
 		console.log('Starting server.');
 
-		pmhttp.start(options.port, options.host);
+		pmhttp.start(options.port, options.addr);
 	});

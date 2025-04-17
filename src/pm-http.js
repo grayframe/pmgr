@@ -6,21 +6,24 @@ const { Server: SocketIO } = require('socket.io');
 const path = require('path');
 const debug = require('debug')('pmgr:http');
 
+const Presence = require('./presence');
+
 function PMHttp(pmgr)
 {
 	const self = {};
 	const app = express();
 
-	//lol I don't really like how you've gotten this laid out.  hmm.  Maybe it'll make more sense to do it as a set of "hooks" but I may be overcomplicating it.  Just get it running.
 	function setupMiddleware()
 	{
 		// Basic middleware setup
 		if (process.env.NODE_ENV !== 'production') {
 			debug('init dev server stuff-- statics, vite mw etc');
-			app.use(express.static(path.join(process.cwd(), '../volatile')));
-			app.use(express.static(path.join(process.cwd(), '../static')));
 
-			const { createServer: createViteServer } = require('vite');
+			[process.env.DIR_VOLATILE, process.env.DIR_STATIC].forEach( p => {
+				app.use(express.static(path.isAbsolute(p) ? p : path.join(process.cwd(), p)));
+			});
+
+			/*const { createServer: createViteServer } = require('vite');
 
 			(async () => {
 				const vite = await createViteServer({
@@ -33,7 +36,7 @@ function PMHttp(pmgr)
 				});
 
 				app.use(vite.middlewares);
-			})();
+			})();*/
 		}
 
 
@@ -57,7 +60,7 @@ function PMHttp(pmgr)
 	}*/
 
 	// TODO: figure out how to pass config around.  is process.env better than passing around a config object?
-	function start(port = process.env.PORT || 3000, host = process.env.HOST || '0.0.0.0')
+	function start(port = process.env.PORT || 3000, iface = process.env.INTERFACE || '0.0.0.0')
 	{
 		return new Promise((resolve, reject) => {
 			const httpServer = http.createServer(app);
@@ -66,11 +69,11 @@ function PMHttp(pmgr)
 			// Example connection handler
 			io.on('connection', (socket) => {
 				console.log('A client connected:', socket.id);
-				Presence(pmgr, user, socket);
+				Presence(pmgr, null, io, socket);
 			});
 
-			httpServer.listen(port, host, () => {
-				console.log(`Server running at http://${host}:${port}`);
+			httpServer.listen(port, iface, () => {
+				console.log(`Server running at http://${iface}:${port}`);
 				resolve(httpServer);
 			});
 
