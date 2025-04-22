@@ -4,7 +4,7 @@ const {
 
 const Config = require('../src/config');
 const PMgr = require('../src/pmgr');
-const PMHttp = require('../src/pm-http');
+const PMHttp = require('../src/http');
 const debug = require('debug')('pmgr:bin:serve');
 
 module.exports = new Command('serve')
