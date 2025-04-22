@@ -8,7 +8,7 @@ const DB = function(pmgr)
 
 	db = knex({
 		client: 'pg',
-		connection: 
+		connection:
 		{
 			host: pmgr.config.DB_HOST,
 			port: pmgr.config.DB_PORT,

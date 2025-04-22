@@ -23,7 +23,6 @@ module.exports = () =>
 	let resolvePath = p => path.isAbsolute(p) ? p : path.join(process.cwd(), p);
 	self.getStatic = () => resolvePath(self.actual.DIR_STATIC);
 	self.getVolatile = () => resolvePath(self.actual.DIR_VOLATILE);
-	
 
 	return self;
 };
@@ -35,7 +34,6 @@ const DEFAULT_CONFIG = module.exports.default =
 
 	DIR_STATIC : '',
 	DIR_VOLATILE : '',
-
 
 	// Database Configuration
 	DB_HOST : 'localhost',
@@ -53,7 +51,6 @@ const DEFAULT_CONFIG = module.exports.default =
 	SESSION_MAX_AGE : 86400000, //24 hours
 
 	// File Storage
-	UPLOAD_DIR : 'uploads',
 	MAX_FILE_SIZE : 10485760, //10mb
 
 	// Development-specific settings
