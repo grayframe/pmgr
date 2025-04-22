@@ -1,1 +1,5 @@
-const a = require('socket.io');
+//const a = require('socket.io');
+
+import html from './index.pug';
+
+
