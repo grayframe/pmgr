@@ -10,11 +10,11 @@ const DB = function(pmgr)
 		client: 'pg',
 		connection:
 		{
-			host: pmgr.config.DB_HOST,
-			port: pmgr.config.DB_PORT,
-			database: pmgr.config.DB_NAME,
-			user: pmgr.config.DB_USER,
-			password: pmgr.config.DB_PASSWORD
+			host: pmgr.config.actual.DB_HOST,
+			port: pmgr.config.actual.DB_PORT,
+			database: pmgr.config.actual.DB_NAME,
+			user: pmgr.config.actual.DB_USER,
+			password: pmgr.config.actual.DB_PASSWORD
 		}
 	});
 

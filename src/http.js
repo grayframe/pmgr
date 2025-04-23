@@ -56,7 +56,7 @@ function PMHttp(pmgr)
 		return new Promise((resolve, reject) =>
 		{
 			const httpServer = http.createServer(app);
-			const io = new SocketIO(httpServer);
+			const io = new SocketIO(httpServer, {maxHttpBufferSize: 1e7});
 
 			io.on('connection', (socket) =>
 			{

@@ -19,7 +19,7 @@ const PMgr = function(config)
 	};
 
 	//self._models = models;
-	//self._db = db;
+	self.db = db;
 
 	return self;
 };

@@ -7,6 +7,7 @@ exports.up = function(knex)
 		table.string('title', 255).notNullable();
 		table.jsonb('tags'); // Tags associated with the photo
 		table.string('original_filename').notNullable();
+		table.string('path').notNullable();
 		table.text('description'); // Description of the photo
 		table.string('hash').notNullable(); // Hash of the photo for locating it on the filesystem
 		table.integer('width').notNullable();
