@@ -8,10 +8,10 @@ exports.up = function(knex)
 		table.string('last_name').notNullable();
 		table.string('email').unique().notNullable();
 		table.string('phone');
-		table.jsonb('addresses'); // An array of address objects, each with type (shipping, billing, etc.)
-		table.jsonb('payment_info'); // External payment references (e.g., Stripe or PayPal account IDs)
-		table.timestamps(true, true); // created_at, updated_at
-		table.jsonb('history'); // Track changes made to this account
+		table.jsonb('addresses');
+		table.jsonb('payment_info');
+		table.timestamps(true, true);
+		table.jsonb('history');
 	});
 };
 

@@ -6,12 +6,12 @@ exports.up = function(knex)
 		table.uuid('id').primary().defaultTo(knex.raw('gen_random_uuid()'));
 		table.string('title').notNullable();
 		table.text('description');
-		table.jsonb('appearance'); // UI-related settings (e.g., slideshow settings for this album)
-		table.jsonb('order'); // Custom ordering of photos in the album (list of UUIDs)
-		table.jsonb('members'); // List of users who are members of this album
-		table.uuid('project_id').references('id').inTable('projects').onDelete('RESTRICT');
-		table.timestamps(true, true); // created_at, updated_at
-		table.jsonb('history'); // Track changes made to this album
+		table.jsonb('appearance');
+		table.jsonb('order');
+		table.string('visibility');
+		table.uuid('project_id').references('id').inTable('project').onDelete('RESTRICT');
+		table.timestamps(true, true);
+		table.jsonb('history');
 	});
 };
 

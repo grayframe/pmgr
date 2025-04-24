@@ -14,7 +14,7 @@ exports.up = function(knex)
 		table.integer('height').notNullable();
 		table.boolean('is_monochrome').defaultTo(false); // True if photo is monochrome
 		table.jsonb('exif'); // Exif data (stored as JSONb)
-		table.uuid('project_id').references('id').inTable('projects').onDelete('RESTRICT');
+		table.uuid('project_id').references('id').inTable('project').onDelete('RESTRICT');
 		table.timestamps(true, true); // created_at, updated_at
 		table.jsonb('history'); // Track changes made to this photo
 	});
