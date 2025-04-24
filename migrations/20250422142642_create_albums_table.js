@@ -1,7 +1,7 @@
 // Migration: create_albums_table.js
 exports.up = function(knex)
 {
-	return knex.schema.createTable('albums', function(table)
+	return knex.schema.createTable('album', function(table)
 	{
 		table.uuid('id').primary().defaultTo(knex.raw('gen_random_uuid()'));
 		table.string('title').notNullable();

@@ -1,6 +1,6 @@
 const debug = require('debug')('pmgr:pmgr');
 const DB = require('./db');
-const Models = require('./models');
+const Service = require('./service');
 const MediaLib = require('./media-lib');
 
 module.exports = function(config)
@@ -33,9 +33,12 @@ module.exports = function(config)
 		db.dispose();
 	};
 
-	self.db = db;
-	self.models = models;
-	self.mediaLib = mediaLib;
+	const db =
+		self.db = DB(dbConf);
+	const service =
+		self.service = Service(self.db);
+	const mediaLib =
+		self.mediaLib = MediaLib(mediaLibConf);
 
 	return self;
 };

@@ -1,7 +1,7 @@
 // Migration: create_photos_table.js
 exports.up = function(knex)
 {
-	return knex.schema.createTable('photos', function(table)
+	return knex.schema.createTable('photo', function(table)
 	{
 		table.uuid('id').primary().defaultTo(knex.raw('gen_random_uuid()'));
 		table.string('title', 255).notNullable();

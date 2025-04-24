@@ -1,7 +1,7 @@
 // Migration: create_accounts_table.js
 exports.up = function(knex)
 {
-	return knex.schema.createTable('accounts', function(table)
+	return knex.schema.createTable('account', function(table)
 	{
 		table.uuid('id').primary().defaultTo(knex.raw('gen_random_uuid()'));
 		table.string('first_name').notNullable();

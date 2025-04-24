@@ -1,7 +1,7 @@
 // Migration: create_permissions_table.js
 exports.up = function(knex)
 {
-	return knex.schema.createTable('permissions', function(table)
+	return knex.schema.createTable('permission', function(table)
 	{
 		table.uuid('user_id').references('id').inTable('users').onDelete('CASCADE');
 		table.uuid('project_id').references('id').inTable('projects').onDelete('CASCADE');

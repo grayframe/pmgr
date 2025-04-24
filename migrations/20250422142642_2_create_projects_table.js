@@ -1,7 +1,7 @@
 // Migration: create_projects_table.js
 exports.up = function(knex)
 {
-	return knex.schema.createTable('projects', function(table)
+	return knex.schema.createTable('project', function(table)
 	{
 		table.uuid('id').primary().defaultTo(knex.raw('gen_random_uuid()'));
 		table.string('title').notNullable();
