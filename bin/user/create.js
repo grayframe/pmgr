@@ -1,6 +1,4 @@
-const {
-	Command
-} = require('commander');
+const {Command} = require('commander');
 const debug = require('debug')('pmgr:bin:user:create');
 
 module.exports = new Command('create')

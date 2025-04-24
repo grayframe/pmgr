@@ -7,7 +7,7 @@ module.exports = new Command('create')
 	.description('create a default config for user to edit')
 	.action(async(options) =>
 	{
-		console.error('pipe output to \'.env.<desired env>\' to install the config')
+		console.error('pipe output to \'.env.<desired env>\' to install the config');
 
 		//TODO: Log the config to stdout
 	});

@@ -2,9 +2,7 @@
 
 const express = require('express');
 const http = require('http');
-const {
-	Server: SocketIO
-} = require('socket.io');
+const {Server: SocketIO} = require('socket.io');
 const path = require('path');
 const debug = require('debug')('pmgr:http');
 
@@ -31,8 +29,8 @@ function PMHttp(pmgr)
 
 			app.use(
 				webpackDevMiddleware(compiler, {
-					publicPath: '/', // Serve from root
-					writeToDisk: false // Keep in-memory
+					publicPath: '/',
+					writeToDisk: false
 				})
 			);
 
@@ -72,7 +70,7 @@ function PMHttp(pmgr)
 
 			httpServer.on('error', reject);
 		});
-	}
+	};
 
 	setupMiddleware();
 

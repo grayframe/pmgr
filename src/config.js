@@ -9,26 +9,27 @@ module.exports = () =>
 
 	process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
-	self.file = dotenv.config({
-		path: path.resolve(process.cwd(), `.env.${process.env.NODE_ENV}`)
-	});
-	self.actual = Object.create(null);
+	const file = self.file = dotenv.config({path: path.resolve(process.cwd(), `.env.${process.env.NODE_ENV}`)});
+	const actual = self.actual = Object.create(null);
 
 	Object.keys(DEFAULT_CONFIG).forEach( key =>
 	{
 		self.actual[key] = process.env[key] || DEFAULT_CONFIG[key];
 	});
 
-	let resolvePath = p => path.isAbsolute(p) ? p : path.join(process.cwd(), p);
-	self.getStatic = () => resolvePath(self.actual.DIR_STATIC);
-	self.getVolatile = () => resolvePath(self.actual.DIR_VOLATILE);
+	const resolvePath = p => path.isAbsolute(p) ? p : path.join(process.cwd(), p);
 
-	self.saveConfig = ()
+	const getStatic = self.getStatic =
+		() => resolvePath(actual.DIR_STATIC);
+	const getVolatile = self.getVolatile =
+		() => resolvePath(actual.DIR_VOLATILE);
+
+	const saveConfig = self.saveConfig = () =>
 	{
 		let dest = path.join(process.cwd(), '.env.' + actual.NODE_ENV);
 		if (fs.existsSync(dest))
 			throw Error('file already exists: ' + dest);
-		let stream = fs.createWriteStream(filePath, { flags: 'w' });
+		let stream = fs.createWriteStream(dest, { flags: 'w' });
 		Object.keys(DEFAULT_CONFIG).forEach( key =>
 		{
 			stream.write(`${key}=${actual[key]}`);

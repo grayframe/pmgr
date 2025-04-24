@@ -20,23 +20,17 @@ module.exports = [
 			'semi': ['error', 'always'],
 			'no-unused-vars': ['warn'],
 			'no-console': ['warn'],
-			'camelcase': ['error', {
-				properties: 'never'
-			}],
+			'camelcase': ['error', {properties: 'never'}],
 			'arrow-spacing': ['error', {
 				before: true, after: true
 			}],
-			'no-multiple-empty-lines': ['error', {
-				max: 1
-			}],
+			'no-multiple-empty-lines': ['error', {max: 1}],
 			'space-before-function-paren': ['error', 'never'],
 			'space-before-blocks': ['error', 'always'],
 			'keyword-spacing': ['error', {
 				before: true, after: true
 			}],
-			'space-infix-ops': ['error', {
-				int32Hint: false
-			}],
+			'space-infix-ops': ['error', {int32Hint: false}],
 			'comma-spacing': ['error', {
 				before: false, after: true
 			}],
@@ -47,13 +41,13 @@ module.exports = [
 					'multiline': true, 'minProperties': 2
 				},
 				'ObjectPattern': {
-					'multiline': true, 'minProperties': 5
+					'multiline': false, 'minProperties': 2
 				},
 				'ImportDeclaration': {
-					'multiline': true, 'minProperties': 5
+					'multiline': true, 'minProperties': 2
 				},
 				'ExportDeclaration': {
-					'multiline': true, 'minProperties': 5
+					'multiline': true, 'minProperties': 2
 				}
 			}],
 			'eol-last': ['error', 'always']

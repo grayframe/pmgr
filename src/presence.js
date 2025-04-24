@@ -27,11 +27,12 @@ module.exports = (pmgr, user, io, socket) =>
 
 			// Check for duplicate hash-- redundant with what's done in file manager, but for the fuutre i'll leave it
 			// it's possible that at some point files will live on multiple servers.
-			const existingPhoto = await pmgr.db('photo')
-				.where({
-					hash: hash,
-					project_id: user.project_id
-				})
+			const existingPhoto = await pmgr.db.get('photo')
+				.where(
+					{
+						hash: hash,
+						project_id: user.project_id
+					})
 				.first();
 
 			if (existingPhoto)
@@ -41,10 +42,11 @@ module.exports = (pmgr, user, io, socket) =>
 			}
 
 			// Save to database
-			const photoData = {
+			const photoData =
+			{
 				filename: name,
 				title: path.baseName(name),
-				path: mediaLib.getPath(hash),
+				path: pmgr.mediaLib.getPath(hash),
 				original_name: name,
 				hash: hash,
 				project_id: user.project_id,

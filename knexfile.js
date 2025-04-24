@@ -9,11 +9,7 @@ module.exports = {
 		password: config.DB_PASSWORD,
 		database: config.DB_NAME
 	},
-	migrations: {
-		directory: './migrations'
-	},
-	seeds: {
-		directory: './seeds'
-	}
+	migrations: {directory: './migrations'},
+	seeds: {directory: './seeds'}
 };
 

@@ -1,6 +1,4 @@
-const {
-	Command
-} = require('commander');
+const {Command} = require('commander');
 
 const Config = require('../src/config');
 const PMgr = require('../src/pmgr');
