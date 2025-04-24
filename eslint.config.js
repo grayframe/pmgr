@@ -38,16 +38,16 @@ module.exports = [
 			'no-trailing-spaces': 'error',
 			'object-curly-newline': ['error', {
 				'ObjectExpression': {
-					'multiline': true, 'minProperties': 2
+					'multiline': true, 'minProperties': 5
 				},
 				'ObjectPattern': {
-					'multiline': false, 'minProperties': 2
+					'multiline': false, 'minProperties': 5
 				},
 				'ImportDeclaration': {
-					'multiline': true, 'minProperties': 2
+					'multiline': true, 'minProperties': 5
 				},
 				'ExportDeclaration': {
-					'multiline': true, 'minProperties': 2
+					'multiline': true, 'minProperties': 5
 				}
 			}],
 			'eol-last': ['error', 'always']
