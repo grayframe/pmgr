@@ -22,5 +22,5 @@ exports.up = function(knex)
 
 exports.down = function(knex)
 {
-	return knex.schema.dropTable('photos');
+	return knex.schema.dropTable('photo');
 };

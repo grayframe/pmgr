@@ -11,7 +11,6 @@ exports.up = function(knex)
 		table.jsonb('favorites');
 		table.jsonb('uiprefs');
 		table.jsonb('prefs');
-		table.uuid('account_id').notNullable().unique().references('id').inTable('account').onDelete('RESTRICT');
 		table.timestamps(true, true);
 		table.jsonb('history');
 	});
@@ -19,5 +18,5 @@ exports.up = function(knex)
 
 exports.down = function(knex)
 {
-	return knex.schema.dropTable('users');
+	return knex.schema.dropTable('user');
 };

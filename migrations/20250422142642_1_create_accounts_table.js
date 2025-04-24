@@ -10,6 +10,7 @@ exports.up = function(knex)
 		table.string('phone');
 		table.jsonb('addresses');
 		table.jsonb('payment_info');
+		table.uuid('user_id').notNullable().unique().references('id').inTable('user').onDelete('RESTRICT');
 		table.timestamps(true, true);
 		table.jsonb('history');
 	});
@@ -17,5 +18,5 @@ exports.up = function(knex)
 
 exports.down = function(knex)
 {
-	return knex.schema.dropTable('accounts');
+	return knex.schema.dropTable('account');
 };
