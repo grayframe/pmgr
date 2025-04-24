@@ -1,12 +1,11 @@
-const path   = require('path');
 const dotenv = require('dotenv');
-
-const config = Object.create(null);
+const path   = require('path');
+const fs = require('fs');
 
 // Load environment variables from .env file
 module.exports = () =>
 {
-	let self = Object.create(module.exports);
+	const self = Object.create(module.exports);
 
 	process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
@@ -17,12 +16,25 @@ module.exports = () =>
 
 	Object.keys(DEFAULT_CONFIG).forEach( key =>
 	{
-		self.actual[key] = process.env[key];
+		self.actual[key] = process.env[key] || DEFAULT_CONFIG[key];
 	});
 
 	let resolvePath = p => path.isAbsolute(p) ? p : path.join(process.cwd(), p);
 	self.getStatic = () => resolvePath(self.actual.DIR_STATIC);
 	self.getVolatile = () => resolvePath(self.actual.DIR_VOLATILE);
+
+	self.saveConfig = ()
+	{
+		let dest = path.join(process.cwd(), '.env.' + actual.NODE_ENV);
+		if (fs.existsSync(dest))
+			throw Error('file already exists: ' + dest);
+		let stream = fs.createWriteStream(filePath, { flags: 'w' });
+		Object.keys(DEFAULT_CONFIG).forEach( key =>
+		{
+			stream.write(`${key}=${actual[key]}`);
+		});
+		stream.end();
+	};
 
 	return self;
 };
@@ -34,6 +46,7 @@ const DEFAULT_CONFIG = module.exports.default =
 
 	DIR_STATIC : '',
 	DIR_VOLATILE : '',
+	MEDIA_TYPES : 'jpg,png,gif,jpeg,tiff',
 
 	// Database Configuration
 	DB_HOST : 'localhost',
