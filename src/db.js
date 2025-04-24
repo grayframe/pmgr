@@ -1,21 +1,14 @@
 const knex = require('knex');
 const debug = require('debug')('pmgr:db');
 
-const DB = function(pmgr)
+const DB = function(config)
 {
 	let self = Object.create(null);
 	let db = pmgr._db;
 
 	db = knex({
 		client: 'pg',
-		connection:
-		{
-			host: pmgr.config.actual.DB_HOST,
-			port: pmgr.config.actual.DB_PORT,
-			database: pmgr.config.actual.DB_NAME,
-			user: pmgr.config.actual.DB_USER,
-			password: pmgr.config.actual.DB_PASSWORD
-		}
+		connection: config,
 	});
 
 	self.get = function(table)
