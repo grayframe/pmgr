@@ -13,7 +13,7 @@ module.exports = new Command('serve')
 	{
 		let config = Config();
 		let pmgr   = PMgr(config);
-		let pmhttp = PMHttp(pmgr);
+		let pmhttp = PMHttp(pmgr, config);
 
 		console.log('Starting server.');
 

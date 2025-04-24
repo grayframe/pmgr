@@ -4,13 +4,14 @@ const express = require('express');
 const http = require('http');
 const {Server: SocketIO} = require('socket.io');
 const path = require('path');
+const url = require('url');
 const debug = require('debug')('pmgr:http');
 
 const Presence = require('./presence');
 
-function PMHttp(pmgr)
+function PMHttp(pmgr, config)
 {
-	const self = {};
+	const self = Object.create(null);
 	const app = express();
 
 	function setupMiddleware()
@@ -18,14 +19,12 @@ function PMHttp(pmgr)
 		if (process.env.NODE_ENV !== 'production')
 		{
 			debug('init dev server stuff -- webpack middleware, statics');
-			app.use(express.static(pmgr.config.getStatic()));
-			app.use(express.static(pmgr.config.getVolatile()));
+			app.use(express.static(config.getStatic()));
+			app.use(express.static(config.getVolatile()));
 
 			const webpack = require('webpack');
 			const webpackDevMiddleware = require('webpack-dev-middleware');
-			const config = require('../webpack.config.js');
-
-			const compiler = webpack(config);
+			const compiler = webpack(require('../webpack.config.js'));
 
 			app.use(
 				webpackDevMiddleware(compiler, {
@@ -44,17 +43,33 @@ function PMHttp(pmgr)
 		}
 
 		app.use(express.json());
-		app.use(express.urlencoded({
-			extended: true
-		}));
+		app.use(express.urlencoded({extended: true}));
 	}
 
-	function start(port = process.env.PORT || 3000, iface = process.env.INTERFACE || '0.0.0.0')
+	const start = self.start = (port = process.env.PORT || 3000, iface = config.INTERFACE || '0.0.0.0') =>
 	{
 		return new Promise((resolve, reject) =>
 		{
-			const httpServer = http.createServer(app);
-			const io = new SocketIO(httpServer, {maxHttpBufferSize: 1e7});
+			let httpServer = http.createServer(app);
+			let io = new SocketIO(httpServer, {maxHttpBufferSize: 1e7});
+
+			io.on('upgrade', (request, socket, head) =>
+			{
+				let { query } = url.parse(request.url, true);
+				/*let token = query.token;
+
+				if (validateToken(token))
+				{
+					wss.handleUpgrade(request, socket, head, (ws) =>
+					{
+						wss.emit('connection', ws, request);
+					});
+				}
+				else
+				{
+					socket.destroy();
+				}*/
+			});
 
 			io.on('connection', (socket) =>
 			{

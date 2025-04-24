@@ -1,4 +1,3 @@
-const SocketIO = require('socket.io').server;
 const debug = require('debug')('pmgr:presence');
 const path = require('path');
 
@@ -17,7 +16,7 @@ module.exports = (pmgr, user, io, socket) =>
 		debug('Client disconnected:', socket.id);
 	});
 
-	socket.on('file-upload', async({name, buffer}) =>
+	socket.on('file-upload', async({ name, buffer }) =>
 	{
 		try
 		{
@@ -55,19 +54,15 @@ module.exports = (pmgr, user, io, socket) =>
 			};
 
 			photoData.history = JSON.stringify(
-			[{
-				uploadedAt : new Date(),
-				uploadedBy : user.id,
-				newVals : structuredClone(photoData)
-			}]);
-			console.log(photoData);
+				[{
+					uploadedAt : new Date(),
+					uploadedBy : user.id,
+					newVals : structuredClone(photoData)
+				}]);
 
-			let result = await pmgr.db.get('photos').insert(photoData);
+			let result = await pmgr.db('photos').insert(photoData);
 
-
-			let result = await pmgr.db('photo').insert(photoData);
-
-			debug(`Saved: ${filePath}`);
+			debug(`Saved: ${name} to ${pmgr.mediaLib.getPath(hash)}`);
 			debug(`\tSHA-256: ${hash}`);
 			debug(`\tUUID: ${result.id}`);
 			socket.emit('upload-status', `Uploaded ${name} (SHA-256: ${hash})`);

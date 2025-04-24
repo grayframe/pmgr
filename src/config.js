@@ -47,7 +47,7 @@ const DEFAULT_CONFIG = module.exports.default =
 
 	DIR_STATIC : '',
 	DIR_VOLATILE : '',
-	MEDIA_TYPES : 'jpg,png,gif,jpeg,tiff',
+	MEDIA_ALLOWED_TYPES : 'jpg,png,gif,jpeg,tiff',
 
 	// Database Configuration
 	DB_HOST : 'localhost',

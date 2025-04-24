@@ -1,4 +1,6 @@
 const debug = require('debug')('pmgr:pmgr');
+const path = require('path');
+
 const DB = require('./db');
 const Service = require('./service');
 const MediaLib = require('./media-lib');
@@ -7,7 +9,13 @@ module.exports = function(config)
 {
 	let self = Object.create(module.exports);
 
-	let dbConf = 
+	self.dispose = () =>
+	{
+		debug('Disposing of PMgr.');
+		self.db.dispose();
+	};
+
+	let dbConf =
 	{
 		host: config.actual.DB_HOST,
 		port: config.actual.DB_PORT,
@@ -16,21 +24,10 @@ module.exports = function(config)
 		password: config.actual.DB_PASSWORD
 	};
 
-	let mediaLibConf = 
+	let mediaLibConf =
 	{
-		types: config.actual.MEDIA_TYPES,
-		destination: path.join(config.getVolatile(), 'library'),
-	};
-
-	let db = DB(self);
-	let models = Models(db);
-	let mediaLib = MediaLib(mediaLibConf);
-	
-
-	self.dispose = () =>
-	{
-		debug('Disposing of PMgr.');
-		db.dispose();
+		allowedTypes: config.actual.MEDIA_ALLOWED_TYPES,
+		destination: path.join(config.getVolatile(), 'library')
 	};
 
 	const db =

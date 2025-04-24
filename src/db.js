@@ -3,12 +3,11 @@ const debug = require('debug')('pmgr:db');
 
 const DB = function(config)
 {
-	let self = Object.create(null);
-	let db = pmgr._db;
+	let self = Object.create(module.exports);
 
-	db = knex({
+	let db = knex({
 		client: 'pg',
-		connection: config,
+		connection: config
 	});
 
 	self.get = function(table)
