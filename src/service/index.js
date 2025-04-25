@@ -1,26 +1,23 @@
 const debug = require('debug')('pmgr:service');
-
-const Account = require('./account');
+const db = require('../db');
 const User = require('./user');
+const Account = require('./account');
 const Project = require('./project');
 const Permission = require('./permission');
 const Photo = require('./photo');
 const Album = require('./album');
 
-const Models = db =>
+module.exports = db =>
 {
-	let self = Object.create(null);
+	const self = Object.create(module.exports);
+	const _db = self._db = db.get;
 
-	self.account    = Account(self);
-	self.user       = User(self);
-	self.project    = Project(self);
-	self.photo      = Photo(self);
-	self.album      = Album(self);
+	self.user = User(self);
+	self.account = Account(self);
+	self.project = Project(self);
 	self.permission = Permission(self);
-
-	self._db = db;
+	self.photo = Photo(self);
+	self.album = Album(self);
 
 	return self;
 };
-
-module.exports = Models;

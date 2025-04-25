@@ -12,7 +12,7 @@ module.exports = function(config)
 	self.dispose = () =>
 	{
 		debug('Disposing of PMgr.');
-		self.db.dispose();
+		self._db.dispose();
 	};
 
 	let dbConf =
@@ -31,9 +31,9 @@ module.exports = function(config)
 	};
 
 	const db =
-		self.db = DB(dbConf);
+		self._db = DB(dbConf);
 	const service =
-		self.service = Service(self.db);
+		self.service = Service(db);
 	const mediaLib =
 		self.mediaLib = MediaLib(mediaLibConf);
 

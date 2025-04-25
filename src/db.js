@@ -5,7 +5,8 @@ const DB = function(config)
 {
 	let self = Object.create(module.exports);
 
-	let db = knex({
+	let db = knex(
+	{
 		client: 'pg',
 		connection: config
 	});

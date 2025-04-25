@@ -1,14 +1,16 @@
 const {Command} = require('commander');
 const debug = require('debug')('pmgr:bin:user:create');
 
-const Config = require('../src/config');
-const PMgr = require('../src/pmgr');
+const Config = require('../../src/config');
+const PMgr = require('../../src/pmgr');
 
 module.exports = new Command('create')
 	.description('Create a new user')
 	.requiredOption('-l, --username <username>', 'User login name')
 	.requiredOption('-p, --password <password>', 'User password')
 	.option('-d, --display-name <displayName>', 'User display name')
+	.option('-f, --first-name <firstName>', 'User first name')
+	.option('-s, --last-name <lastName>', 'User last name')
 	.option('-e, --email <email>', 'User email address')
 	.action(async(options) =>
 	{
@@ -18,7 +20,7 @@ module.exports = new Command('create')
 		let config = Config();
 		let pmgr   = PMgr(config);
 
-		let userID = await pmgr.service.user.create(SYSTEM_USER_ID, {options, message : 'created new user via CLI'});
+		let userID = await pmgr.service.user.create(SYSTEM_USER_ID, {...options, message : 'new user created via CLI'});
 
 		console.log('Created user, assigned ID:', userID);
 

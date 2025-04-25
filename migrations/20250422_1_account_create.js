@@ -7,8 +7,8 @@ exports.up = function(knex)
 		table.string('first_name');
 		table.string('last_name');
 		table.string('phone');
-		table.jsonb('addresses').defaultTo(`'[]'::jsonb`);
-		table.jsonb('payment_info').defaultTo(`'[]'::jsonb`);
+		table.jsonb('addresses').defaultTo([]);
+		table.jsonb('payment_info').defaultTo([]);
 		table.uuid('user_id').notNullable().unique().references('id').inTable('user').onDelete('RESTRICT');
 		table.boolean('trashed').notNullable().defaultTo(false);
 		table.jsonb('history').notNullable();

@@ -38,19 +38,27 @@ module.exports = [
 			'no-trailing-spaces': 'error',
 			'object-curly-newline': ['error', {
 				'ObjectExpression': {
-					'multiline': true, 'minProperties': 5
+					'multiline': true,
+					'minProperties': 5,
+					'consistent': true
 				},
 				'ObjectPattern': {
-					'multiline': false, 'minProperties': 5
+					'multiline': false,
+					'minProperties': 5
 				},
 				'ImportDeclaration': {
-					'multiline': true, 'minProperties': 5
+					'multiline': true,
+					'minProperties': 5
 				},
 				'ExportDeclaration': {
-					'multiline': true, 'minProperties': 5
+					'multiline': true,
+					'minProperties': 5
 				}
 			}],
-			'eol-last': ['error', 'always']
+			'object-curly-spacing': ['error', 'always'],
+			'eol-last': ['error', 'always'],
+			'no-control-regex': 'error',
+			'no-irregular-whitespace': 'error'
 		}
 	}
 ];
