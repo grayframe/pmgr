@@ -41,9 +41,11 @@ module.exports = service =>
 			})
 		]);
 
-		return await table
+		console.log(project);
+
+		return (await table()
 			.insert(project)
-			.returning('id');
+			.returning('id'))[0].id;
 	};
 	const query = self.query = () => table()
 
@@ -59,7 +61,7 @@ module.exports = service =>
 				{ actionType:'remove' }
 			);
 		else
-			await table
+			await table()
 				.del()
 				.where('id', projectID);
 	};

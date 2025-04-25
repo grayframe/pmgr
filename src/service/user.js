@@ -47,7 +47,7 @@ module.exports = service =>
 			debug('creating user', {username, email, password, firstName,lastName,displayName, username, message})
 
 			let userID, accountID, projectID, albumID;
-			try
+			//try
 			{
 				let user =
 				{
@@ -94,7 +94,7 @@ module.exports = service =>
 				{message}
 				);
 			}
-			catch (err)
+			/*catch (err)
 			{
 				if (albumID)
 					await service.album.remove(actorID, albumID, false);
@@ -106,7 +106,7 @@ module.exports = service =>
 				console.log(userID, accountID, projectID, albumID);
 
 				throw Error('row for user (or one of its dependencies) failed to insert. Original error follows:' + err.message);
-			}
+			}*/
 			return userID;
 		};
 
@@ -127,7 +127,7 @@ module.exports = service =>
 				.first();
 
 			if (accountID)
-				await service.account.remove(actorID, accountID[0].id, justTrash);
+				await service.account.remove(actorID, accountID, justTrash);
 
 			if (justTrash)
 			{

@@ -24,6 +24,12 @@ module.exports = service =>
 
 		let changes = [];
 
+		let album = 
+		{
+			project_id : projectID,
+			title : title,
+		};
+
 		album.history = 
 		JSON.stringify([
 			util.getBlankHistoryEntry(actorID,
@@ -34,7 +40,7 @@ module.exports = service =>
 			})
 		]);
 
-		return (await table
+		return (await table()
 			.insert(album)
 			.returning('id'))[0].id;
 	};
