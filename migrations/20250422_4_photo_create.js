@@ -5,18 +5,19 @@ exports.up = function(knex)
 	{
 		table.uuid('id').primary().defaultTo(knex.raw('gen_random_uuid()'));
 		table.string('title', 255).notNullable();
-		table.jsonb('tags'); // Tags associated with the photo
+		table.jsonb('tags').defaultTo(`'[]'::jsonb`);
 		table.string('original_filename').notNullable();
 		table.string('path').notNullable();
-		table.text('description'); // Description of the photo
-		table.string('hash').notNullable(); // Hash of the photo for locating it on the filesystem
+		table.text('description');
+		table.string('hash').notNullable();
 		table.integer('width').notNullable();
 		table.integer('height').notNullable();
-		table.boolean('is_monochrome').defaultTo(false); // True if photo is monochrome
-		table.jsonb('exif'); // Exif data (stored as JSONb)
+		table.boolean('is_monochrome').defaultTo(false);
+		table.jsonb('exif').defaultTo(`'{}'::jsonb`);
 		table.uuid('project_id').references('id').inTable('project').onDelete('RESTRICT');
-		table.timestamps(true, true); // created_at, updated_at
-		table.jsonb('history'); // Track changes made to this photo
+		table.boolean('trashed').notNullable().defaultTo(false);
+		table.jsonb('history').notNullable();
+		table.timestamps(true, true);
 	});
 };
 

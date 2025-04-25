@@ -8,11 +8,12 @@ exports.up = function(knex)
 		table.string('display_name');
 		table.string('password_hash').notNullable();
 		table.string('email').unique();
-		table.jsonb('favorites');
-		table.jsonb('uiprefs');
-		table.jsonb('prefs');
+		table.jsonb('favorites').defaultTo(`'[]'::jsonb`);;
+		table.jsonb('uiprefs').defaultTo(`'{}'::jsonb`);;
+		table.jsonb('prefs').defaultTo(`'{}'::jsonb`);;
+		table.boolean('trashed').notNullable().defaultTo(false);
+		table.jsonb('history').notNullable();
 		table.timestamps(true, true);
-		table.jsonb('history');
 	});
 };
 

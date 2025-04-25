@@ -6,12 +6,13 @@ exports.up = function(knex)
 		table.uuid('id').primary().defaultTo(knex.raw('gen_random_uuid()'));
 		table.string('title').notNullable();
 		table.text('description');
-		table.jsonb('appearance');
-		table.jsonb('order');
+		table.jsonb('appearance').defaultTo(`'{}'::jsonb`);
+		table.jsonb('order').defaultTo(`'[]'::jsonb`);
 		table.string('visibility');
 		table.uuid('project_id').references('id').inTable('project').onDelete('RESTRICT');
+		table.boolean('trashed').notNullable().defaultTo(false);
+		table.jsonb('history').notNullable();
 		table.timestamps(true, true);
-		table.jsonb('history');
 	});
 };
 

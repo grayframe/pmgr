@@ -5,10 +5,11 @@ exports.up = function(knex)
 	{
 		table.uuid('user_id').references('id').inTable('user').onDelete('CASCADE');
 		table.uuid('project_id').references('id').inTable('project').onDelete('CASCADE');
-		table.jsonb('permissions'); // Define the permissions (e.g., read, write, admin)
-		table.timestamps(true, true); // created_at, updated_at
-		table.jsonb('history'); // Track changes to this permission record
+		table.string('role');
 		table.primary(['user_id', 'project_id']);
+		table.boolean('trashed').notNullable().defaultTo(false);
+		table.jsonb('history').notNullable();
+		table.timestamps(true, true);
 	});
 };
 
