@@ -113,9 +113,10 @@ module.exports = service =>
 	const deactivate = self.deactivate =
 		async(actorID, userID) =>
 		{
-
+			
 		};
-	const query = self.query = () => table()
+
+	const query = self.query = () => table();
 
 	const remove = self.remove =
 		async(actorID, userID, justTrash = true) =>
