@@ -5,19 +5,18 @@ const tableName = 'photo';
 module.exports = service =>
 {
 	const self = Object.create(module.exports);
-	const table = self._table = () => service._db(tableName);
-	self.tableName = tableName;
+	const table = self._table = () => service.table(tableName);
 	const saveWithHistory = util.saveWithHistory(service, tableName);
 
 	const get = self.get = 
 		async(id) =>
 	{
-		return table
+		return service._db(tableName)
 			.select('*')
 			.where('id', id)
 			.first();
 	};
-	const query = self.query = () => table()
+	const query = self.query = () => service._db(tableName)
 
 	const remove = self.remove = 
 		async(actorID, photoID, justTrash = true) =>
@@ -31,7 +30,7 @@ module.exports = service =>
 				{ actionType:'remove' }
 			);
 		else
-			await table
+			await service._db(tableName)
 				.del()
 				.where('id', photoID);
 	};

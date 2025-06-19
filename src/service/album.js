@@ -5,7 +5,7 @@ const tableName = 'album';
 module.exports = service =>
 {
 	const self = Object.create(module.exports);
-	const table = self._table = () => service._db(tableName);
+	const table = self._table = () => service.table(tableName);
 	self.tableName = tableName;
 	const saveWithHistory = util.saveWithHistory(service, tableName);
 

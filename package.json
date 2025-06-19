@@ -24,14 +24,17 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "base-x": "^5.0.1",
     "commander": "^13.1.0",
     "debug": "^4.4.0",
     "dotenv": "^16.4.7",
+    "esbuild": "^0.25.3",
     "express": "^4.21.2",
     "file-type": "^20.4.1",
     "knex": "^3.1.0",
     "pg": "^8.11.3",
-    "socket.io": "^4.8.1"
+    "socket.io": "^4.8.1",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.26.9",
@@ -42,15 +45,12 @@
     "html-loader": "^5.1.0",
     "html-webpack-plugin": "^5.6.3",
     "jest": "^29.7.0",
-    "nodemon": "^3.0.3",
+    "nodemon": "^3.1.10",
     "pug": "^2.0.4",
     "pug-html-loader": "^1.1.7",
     "pug-lint": "^2.7.0",
     "pug-loader": "^2.4.0",
-    "sass": "^1.86.3",
-    "webpack": "^5.99.5",
-    "webpack-cli": "^6.0.1",
-    "webpack-dev-middleware": "^7.4.2"
+    "sass": "^1.87.0"
   },
   "engines": {
     "node": ">=14.0.0"

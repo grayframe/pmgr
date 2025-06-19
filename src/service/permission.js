@@ -4,12 +4,13 @@ const tableName = 'permission';
 module.exports = service =>
 {
 	const self = Object.create(module.exports);
-	const table = self._table = service._db(tableName);
+	const table = self._table = () => service.table(tableName);
 	self.tableName = tableName;
 
 	const userCan = self.userCan = 
 		async({actorID, projectID, action}) => 
 	{
+		//TODO: keep these in a memcache, or better yet, auto populate them into the cache on user login?
 		if (actorID === SYSTEM_USER_ID)
 			return true;
 

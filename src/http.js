@@ -7,6 +7,8 @@ const path = require('path');
 const url = require('url');
 const debug = require('debug')('pmgr:http');
 
+const QS = require('./quickserver');
+const Routes = require('./routes');
 const Presence = require('./presence');
 
 function PMHttp(pmgr, config)
@@ -16,33 +18,35 @@ function PMHttp(pmgr, config)
 
 	function setupMiddleware()
 	{
+
+		//get user stuff
+		//validate user, get user object (or from memcache)
+
 		if (process.env.NODE_ENV !== 'production')
 		{
 			debug('init dev server stuff -- webpack middleware, statics');
+
 			app.use(express.static(config.getStatic()));
 			app.use(express.static(config.getVolatile()));
 
-			const webpack = require('webpack');
-			const webpackDevMiddleware = require('webpack-dev-middleware');
-			const compiler = webpack(require('../webpack.config.js'));
-
-			app.use(
-				webpackDevMiddleware(compiler, {
-					publicPath: '/',
-					writeToDisk: false
-				})
-			);
-
-			/*app.use((req, res, next) => {
-				// Force / to index.html (compiled from pug)
-				if (req.url === '/' || req.url === '/index.html') {
-					req.url = '/index.html';
-				}
-				next();
-			});*/
 		}
 
 		app.use(express.json());
+		let qs = QS(
+		{
+			volatileDir : config.actual.DIR_VOLATILE,
+			libDir : './lib', 
+			compilerMap : 
+			{
+				pug  : require('./compilers/pug'),
+				sass : require('./compilers/sass'),
+				jsc  : require('./compilers/esbuild')
+			}
+		});
+
+		app.use(Routes(pmgr));
+
+		app.use(qs);
 		app.use(express.urlencoded({extended: true}));
 	}
 

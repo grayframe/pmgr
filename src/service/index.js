@@ -10,7 +10,7 @@ const Album = require('./album');
 module.exports = db =>
 {
 	const self = Object.create(module.exports);
-	const _db = self._db = db.get;
+	self.table = tableName => db.get(tableName);
 
 	self.user = User(self);
 	self.account = Account(self);

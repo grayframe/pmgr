@@ -17,6 +17,7 @@ module.exports = (
 		watch = true
 	} ) =>
 {
+	debug(libDir, volatileDir);
 	//sanity checks
 	if (!libDir)
 		throw Error('param libDir is required.');
